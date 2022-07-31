@@ -157,7 +157,7 @@ def train(epochs):
             accuracy = cur_accuracy
             torch.save(model.state_dict(), 'best.pth')  # 更改：保存网络中的参数
 
-    print('The best accurage is:{}'.format(accuracy))
+    print('The best accuracy is:{}'.format(accuracy))   # 更改：accurage 改为了 accuracy
 
 
 train(epochs)  # 更改：这里只是提醒一下如果训练好一轮不想再训练一次，注释掉改行直接运行即可
