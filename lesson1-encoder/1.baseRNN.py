@@ -137,11 +137,11 @@ def train_iter(category, name_tensor):
 
 
 def train(epochs):
+    accuracy = 0  # 更改: 将accuracy放到循环外以保证能正确记录accuracy
     for epoch in range(1, epochs + 1):
         right_count = 0
         total_count = iters
         total_loss = 0
-        accuracy = 0
         for iter in range(iters):
             category, name, category_tensor, name_tensor = randomTrainExample()
             loss, flag = train_iter(category_tensor, name_tensor)
