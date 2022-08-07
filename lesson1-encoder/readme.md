@@ -13,6 +13,7 @@
 - accuracy写到循环中无法正常记录最大值已更改
 
 ## 2. Implement a basic RNN model to classify which country a name belongs to(More Concise)
+**用Embedding实现一个RNN模型用于名字所属国家的分类**
 代码相对于原视频做了如下更改（可以直接Ctrl+F搜索“更改”找到相应的更改位置）：
 
 - accuracy写到循环中无法正常记录最大值已更改
