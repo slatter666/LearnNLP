@@ -175,4 +175,4 @@ while True:
             out, hidden = model(name_tensor[i], hidden)
         predict = out.argmax().item()
 
-        print("This name might belongs to:", categorys[predict])  # 更改：把category改为了categories
+        print("This name might belongs to:", categorys[predict])  # 更改：把category改为了categorys
