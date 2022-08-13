@@ -17,3 +17,7 @@
 代码相对于原视频做了如下更改（可以直接Ctrl+F搜索“更改”找到相应的更改位置）：
 
 - accuracy写到循环中无法正常记录最大值已更改
+
+## Implement a LSTM model to classify which country a name belongs to
+**用LSTM模型用于名字所属分类，采用batch训练，数据集拆分为训练集、验证集、测试集**
+代码相对于原视频做了如下更改（可以直接Ctrl+F搜索“更改”找到相应的更改位置）：

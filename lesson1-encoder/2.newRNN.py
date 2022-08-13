@@ -123,7 +123,6 @@ def train():
         total_iters = len(train_data)
         right_count = 0
         total_loss = 0
-        accuracy_max = 0
         for i in range(len(train_data)):
             name, country = train_data[i]
             name_tensor, country_tensor = data_to_tensor(name, country)
