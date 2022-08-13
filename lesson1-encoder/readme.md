@@ -21,3 +21,7 @@
 ## 3. Implement a LSTM model to classify which country a name belongs to
 **用LSTM模型用于名字所属分类，采用batch训练，数据集拆分为训练集、验证集、测试集**
 代码相对于原视频做了如下更改：
+
+## 4. Implement a naïve classification model to classify IMDB dataset
+**用比较简单的EmbeddingBag做IMDB数据集的分类（暂未完成）**
+代码相对于原视频做了如下更改：
