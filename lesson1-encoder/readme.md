@@ -23,5 +23,5 @@
 代码相对于原视频做了如下更改：
 
 ## 4. Implement a naïve classification model to classify IMDB dataset
-**用比较简单的EmbeddingBag做IMDB数据集的分类（暂未完成）**
+**用词向量平均做IMDB数据集的分类（暂未完成）**
 代码相对于原视频做了如下更改：
