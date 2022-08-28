@@ -16,7 +16,7 @@
 - 实现一个最基础的RNN模型来对名字分类，判断其所属国家
 - 直接用Pytorch内置RNN模型来对名字分类，判断其所属国家
 - 用Pytorch内置LSTM模型对名字分类，判断其所属国家
-- 实现一个比较简单的基于Embedding的模型对IMDB数据集分类
+- 实现一个比较简单的基于词向量平均模型对IMDB数据集分类
 - 用双向LSTM对IMDB数据集分类（将最终的hidden作为分类网络的输入）
 - 用双向LSTM对IMDB数据集分类（将所有hidden作为分类网络的输入，介绍工具pytorch-lightning）
 
