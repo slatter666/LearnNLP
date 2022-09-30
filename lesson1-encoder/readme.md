@@ -25,7 +25,12 @@
 ## 4. Implement a model based on average of word vector to classify IMDB dataset
 **用词向量平均做IMDB数据集的分类**
 代码相对于原视频做了如下更改：
+- 修改了learning rate值为0.01
 
 ## 5. Implement a bidirectional LSTM model to classify IMDB dataset
-**用双向LSTM做IMDB数据集的分类（暂未完成）**
+**用双向LSTM做IMDB数据集的分类**
+代码相对于原视频做了如下更改：
+
+## 6. Classify IMDB dataset with pytorch-lightning
+**用双向LSTM做IMDB数据集的分类（使用pytorch-lightning）**
 代码相对于原视频做了如下更改：

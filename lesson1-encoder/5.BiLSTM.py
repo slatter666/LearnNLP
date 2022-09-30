@@ -1,8 +1,8 @@
 """
-  * FileName: 4.IMDB.py
+  * FileName: 5.BiLSTM.py
   * Author:   Slatter
-  * Date:     2022/8/28 20:00
-  * Description: Implement a model based on average of word vector to classify IMDB dataset
+  * Date:     2022/9/30
+  * Description: Implement a bidirectional LSTM model to classify IMDB dataset
   * History:
 """
 import torch
@@ -11,13 +11,15 @@ from torch.utils.data import DataLoader
 from torchtext.datasets import IMDB
 from torchtext.data.functional import to_map_style_dataset
 from typing import List
+from torch.nn.utils.rnn import pack_padded_sequence
 
 print("-----------------------Hyperparameters-----------------------")
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-embed_size = 300
+embed_size = 200
+hidden_size = 120
 batch_size = 128
 Epochs = 10
-learning_rate = 0.01   # 更改 lr:5 -> 0.01  accuracy: 55% -> 63.8%
+learning_rate = 0.01  # 0.1 -> 0.01 正确率提升了20%+
 
 print("-----------------------Prepare data-----------------------")
 
@@ -30,7 +32,9 @@ def build_vocab(data):
     vocab = []
     for label, text in data:
         vocab += tokenize(text)
+
     vocab.append("<unk>")
+    vocab.append("<pad>")
     vocab = sorted(list(set(vocab)))
     return vocab
 
@@ -51,7 +55,7 @@ token2id, id2token = token_id_convert(vocab)
 
 
 def label_pipeline(label):
-    if label == 'neg':
+    if label == "neg":
         return 0
     else:
         return 1
@@ -62,21 +66,26 @@ def text_pipeline(text: str):
     tokens = tokenize(text)
     for i in range(len(tokens)):
         res.append(token2id.get(tokens[i], token2id["<unk>"]))
-    assert len(res) == len(tokens), "生成的id数和token数不一致"
+    assert len(res) == len(tokens), "生成id数和token数不一致"
     return res
 
 
 def collate_batch(batch):
-    label_list, text_list, offsets = [], [], [0]
+    label_list, text_list, offsets = [], [], []
     for label, text in batch:
         label_list.append(label_pipeline(label))
-        processed_text = torch.tensor(text_pipeline(text), dtype=torch.int64)
+        processed_text = text_pipeline(text)
         text_list.append(processed_text)
-        offsets.append(processed_text.size(0))
+        offsets.append(len(processed_text))
+
+    # padding
+    max_len = max([len(tokens) for tokens in text_list])
+    for i in range(len(text_list)):
+        text_list[i] += [token2id["<pad>"]] * (max_len - len(text_list[i]))
+
     label_list = torch.tensor(label_list, dtype=torch.int64)
-    offsets = torch.tensor(offsets[:-1]).cumsum(dim=0)
-    text_list = torch.cat(text_list)
-    return label_list.to(DEVICE), text_list.to(DEVICE), offsets.to(DEVICE)
+    text_list = torch.tensor(text_list, dtype=torch.int64)
+    return label_list.to(DEVICE), text_list.to(DEVICE), offsets
 
 
 train_dataset = train[:int(len(train) * 0.9)]
@@ -90,20 +99,36 @@ test_dataloader = DataLoader(test_dataset, batch_size=batch_size, collate_fn=col
 print("-----------------------Build model-----------------------")
 
 
-class IMDBClassifier(nn.Module):
-    def __init__(self, vocab_size, embed_size, num_class):
-        super(IMDBClassifier, self).__init__()
-        self.embedding = nn.EmbeddingBag(num_embeddings=vocab_size, embedding_dim=embed_size, mode="mean", sparse=True)
-        self.fc = nn.Linear(embed_size, num_class)
+class BiLSTMClassifier(nn.Module):
+    def __init__(self, vocab_size, embed_size, hidden_size, num_class, layer=1):
+        """
+        :param vocab_size: 词汇表大小
+        :param embed_size: embeddding size
+        :param hidden_size: hidden state size
+        :param num_class: output size
+        :param layer: layers
+        """
+        super(BiLSTMClassifier, self).__init__()
+        self.embedding = nn.Embedding(vocab_size, embed_size)
+        self.lstm = nn.LSTM(embed_size, hidden_size, num_layers=layer, bidirectional=True)
+        self.fc = nn.Linear(hidden_size * 2, num_class)
 
     def forward(self, text, offset):
-        embed = self.embedding(text, offset)
-        return self.fc(embed)
+        """
+        :param text: shape:(batch_size, max_len)
+        :param offset: type: list  length: batch_size
+        :return: logits
+        """
+        embed = self.embedding(text.transpose(0, 1))  # (max_len, batch_size, embed_size)
+        embed = pack_padded_sequence(embed, offset, enforce_sorted=False)
+        out, (ht, ct) = self.lstm(embed)  # ht: shape (num_layers * 2, batch_size, hidden_size)
+        final_hidden = torch.cat((ht[-2], ht[-1]), dim=1)  # (batch_size, hidden_size * 2)
+        return self.fc(final_hidden)
 
 
 print("-----------------------Train the model-----------------------")
-model = IMDBClassifier(vocab_size=len(vocab), embed_size=embed_size, num_class=2).to(DEVICE)
-optimizer = optim.SGD(params=model.parameters(), lr=learning_rate)
+model = BiLSTMClassifier(vocab_size=len(vocab), embed_size=embed_size, hidden_size=hidden_size, num_class=2).to(DEVICE)
+optimizer = optim.Adam(params=model.parameters(), lr=learning_rate)
 criterion = nn.CrossEntropyLoss()
 
 
@@ -151,6 +176,7 @@ def train():
             torch.save(model.state_dict(), 'best.pth')
 
     print("The best accuracy is:", accuracy_max)
+
 
 train()
 print("-----------------------Evaluate-----------------------")
