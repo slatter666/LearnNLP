@@ -21,6 +21,7 @@
 ## 3. Implement a LSTM model to classify which country a name belongs to
 **用LSTM模型用于名字所属分类，采用batch训练，数据集拆分为训练集、验证集、测试集**
 代码相对于原视频做了如下更改：
+- 暂无
 
 ## 4. Implement a model based on average of word vector to classify IMDB dataset
 **用词向量平均做IMDB数据集的分类**
@@ -30,6 +31,7 @@
 ## 5. Implement a bidirectional LSTM model to classify IMDB dataset
 **用双向LSTM做IMDB数据集的分类**
 代码相对于原视频做了如下更改：
+- 暂无
 
 ## 6. Classify IMDB dataset with pytorch-lightning
 **用双向LSTM做IMDB数据集的分类（使用pytorch-lightning）**

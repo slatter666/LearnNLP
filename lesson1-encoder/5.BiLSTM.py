@@ -1,7 +1,7 @@
 """
   * FileName: 5.BiLSTM.py
   * Author:   Slatter
-  * Date:     2022/9/30
+  * Date:     2022/9/30 17:00
   * Description: Implement a bidirectional LSTM model to classify IMDB dataset
   * History:
 """
